@@ -6,7 +6,7 @@ def calculate(a, b):
 
 # Main execution
 if __name__ == "__main__":
-    num1 = 10
+    num1 = 30
     num2 = 20
     answer = calculate(num1, num2)
     print(f"The sum of {num1} and {num2} is: {answer}")
