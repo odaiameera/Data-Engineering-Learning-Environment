@@ -14,7 +14,7 @@ Welcome to my professional data engineering portfolio. I am documenting my trans
   ---------------------------------------------------------
   
   -- CURRENT STATUS: Building a Modern Data Stack
-  -- PRIMARY TOOLS: PostgreSQL, VS Code, Python, PySpark
+  -- PRIMARY TOOLS: SQL, Python, PySpark, Snowflake, AWS, GCP
   -- TARGET ROLES: Data Engineer, Analytics Engineer
 */
 
@@ -53,3 +53,4 @@ WHERE goal = 'Professional Data Engineer';
 /*
   -- "The goal isn't just to see the data, but to build the system that powers it."
 */
+
