@@ -1,0 +1,19 @@
+-- Training on a Punch of SELECT Statements and it is more advanced as I go forward in the course 
+-- Let's Go!
+-- DISTINCT command is used to return the distinct values in a column 
+SELECT DISTINCT (rating) FROM film;
+
+-- COUNT is used to find out the number of rows in a column
+SELECT COUNT (rating) FROM film;
+-- COUNT (DISTINCT ..) is used to find out the number of distinct values in a column
+SELECT COUNT (DISTINCT rating) FROM film;
+-- Parenthesis are optional in a  (DISTINCT (column_name)) function
+SELECT COUNT  (DISTINCT (amount)) FROM payment;
+
+-- SELECT WHERE - (Filter or Conditions)
+-- Basic syntax example 
+SELECT column1, column2
+FROM table1
+WHERE conditions; 
+
+
