@@ -1,6 +1,11 @@
+# 🚀 Data Engineering Journey
+
+Welcome to my profile! I am **Odai Ameera**, and I am documenting my transition from data analysis to **Professional Data Engineering**. 
+
+```sql
 /*
   ---------------------------------------------------------
-  -- DATA ENGINEER IN PROGRESS: Odai Ameera 
+  -- DATA ENGINEER IN PROGRESS: Odai Ameera
   ---------------------------------------------------------
   
   -- STATUS: Currently building a modern Data Stack
@@ -19,14 +24,14 @@ SELECT 'Welcome to my GitHub!' AS greeting;
   -- 2. CURRENT LEARNING STACK (WORK IN PROGRESS)
   -- [x] Google Data Analytics Professional Certificate
   -- [x] Snowflake Introduction
-  -- [>] PostgreSQL Mastery (Jose Portilla-Udemy + Data with Baraa)
-  -- [>] Python Mastery (Jose Portilla-Udemy + Data with Baraa)
+  -- [>] PostgreSQL Mastery (Jose Portilla - Udemy)
+  -- [>] Python Mastery (Jose Portilla - Udemy)
   -- [>] IBM Data Engineering Professional Certificate
 */
 
 -- 3. THE ULTIMATE GOAL
 -- My mission is to become a Professional Data Engineer.
--- I am building the pipes that move data from raw files 
+-- I am building the pipes that move data from raw files (.dat)
 -- into high-performance cloud warehouses (AWS/GCP).
 
 UPDATE career_path
