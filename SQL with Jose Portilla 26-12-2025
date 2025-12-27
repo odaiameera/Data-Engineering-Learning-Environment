@@ -178,3 +178,12 @@ ORDER BY customer_ID DESC
 LIMIT 1;
 
 -- SECTION 3 and 4 (Assessment) COMPLETED 
+
+-- Bonus Gemini challenge 
+-- The Scenario: Your boss wants to know which customers spent more than $50 on a single day.
+
+SELECT customer_id, DATE(payment_date), SUM (amount)
+FROM payment
+GROUP BY customer_id, payment_date
+HAVING  SUM(amount) > 10
+ORDER BY payment_date ASC;
