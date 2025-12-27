@@ -1,0 +1,15 @@
+/* JOINS 
+1. AS Statement 
+2. Full Outer Joins
+3. Left Outer Joins 
+4. Right
+5. UNION */ 
+
+-- As Statement 
+SELECT COUNT (*) AS number_tranx
+FROM payment
+
+SELECT customer_id, SUM(amount) AS total_spent
+FROM payment 
+GROUP BY customer_id
+HAVING SUM (amount) > 100;
