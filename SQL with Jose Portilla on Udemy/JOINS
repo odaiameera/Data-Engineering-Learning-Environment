@@ -13,3 +13,39 @@ SELECT customer_id, SUM(amount) AS total_spent
 FROM payment 
 GROUP BY customer_id
 HAVING SUM (amount) > 100;
+
+-- Joins Basic Syntax 
+SELECT * FROM tableA
+INNER JOIN TableB
+ON TableA.com_match = TableB.col_match 
+
+SELECT * FROM registrations 
+INNER JOIN Logins
+ON registrations.name = Logins.name 
+
+/* This is basically saying grab the registrations table and also grab the logins table and join them together on the column
+that matches in both tables which is the name column */ 
+
+-- Example from my database which is not in the course 
+
+SELECT *
+FROM address
+INNER JOIN customer 
+ON address.address_id = customer.address_id;
+
+SELECT * FROM payment
+INNER JOIN customer 
+ON payment.customer_id = customer.customer_id;
+
+SELECT payment_id,payment.customer_id,customer.first_name 
+FROM payment 
+INNER JOIN customer 
+ON payment.customer_id = customer.customer_id;
+
+/* 💡 SQL INNER JOIN Cheatsheet: 
+• The Intersection Rule: Only returns rows where there is a match in both tables. No match = No row.
+• NULLs are Invisible: `NULL` values never match anything (even other `NULL`s). They are automatically excluded.
+• Default Behavior: `JOIN` is shorthand for `INNER JOIN` in almost all SQL dialects.
+• The "Explosion" Risk: If you join on a non-unique column, one row can match many others, creating unexpected duplicates.
+• Aliases are Mandatory: Use `table AS t` to avoid "ambiguous column name" errors and keep code readable.
+• Filter First?: Remember that `INNER JOIN` is a filter. If you're missing data you expected to see, switch to a `LEFT JOIN` to troubleshoot. */ 
