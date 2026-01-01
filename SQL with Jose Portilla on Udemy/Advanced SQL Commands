@@ -1,0 +1,289 @@
+-- Advanced SQL Commands
+-- Timestamps
+
+SHOW ALL
+SHOW TIMEZONE 
+SELECT NOW()
+SELECT TIMEOFDAY()
+SELECT CURRENT_TIME
+SELECT CURRENT_DATE
+
+-- EXTRACTING INFORMATION 
+
+EXTRACT ()
+AGE ()
+TO_CHAR ()
+
+EXTRACT (YEAR FROM DATE_COL)
+
+AGE (DATE_COL)
+TO_CHAR (DATE_COL,'MM-DD-YYYY')
+
+SELECT EXTRACT(YEAR FROM PAYMENT_DATE) AS YEAR
+FROM PAYMENT 
+
+SELECT EXTRACT (MONTH FROM PAYMENT_DATE) AS payment_month 
+FROM PAYMENT
+
+SELECT EXTRACT (QUARTER FROM PAYMENT_DATE) AS transaction_quarter 
+FROM PAYMENT
+
+SELECT PAYMENT_DATE
+FROM PAYMENT
+
+SELECT AGE (PAYMENT_DATE)
+FROM PAYMENT
+
+-- Challenge 
+-- 1. 
+SELECT DISTINCT TO_CHAR(payment_DATE,'MONTH') AS payment_month
+FROM PAYMENT
+-- 2. 
+SELECT COUNT (EXTRACT(DOW FROM PAYMENT_DATE)) AS payments_on_a_monday 
+FROM PAYMENT
+WHERE (EXTRACT(DOW FROM PAYMENT_DATE)) = 1
+
+-- Simpler solution for the second one 
+SELECT COUNT (*) AS payments_on_a_monday
+FROM payment 
+WHERE EXTRACT (dow FROM payment_date) = 1 
+
+
+-- Mathmetical Functions 
+
+SELECT ROUND (rental_rate/replacement_cost,4) *100 AS percent
+FROM film
+
+SELECT 0.1 * replacement_cost AS deposit 
+FROM film
+
+-- String Functions 
+
+SELECT * FROM CUSTOMER
+
+SELECT LENGTH (first_name) FROM customer 
+
+SELECT first_name, last_name 
+FROM customer ;
+
+SELECT first_name || last_name 
+FROM customer 
+
+SELECT LOWER (LEFT (FIRST_NAME, 1)) || LOWER (LAST_NAME) || '@gmail.com'
+FROM customer
+
+SELECT * FROM FILM 
+
+SELECT TITLE, RENTAL_RATE 
+FROM FILM 
+WHERE RENTAL_RATE >
+(SELECT  AVG (RENTAL_RATE) FROM FILM )
+
+-- SUB QUERY: it helps us get the results in a "single" query request 
+-- BASIC SYNTAX 
+
+SELECT student,grade 
+FROM TEST_SCORES 
+WHERE GRADE > (SELECT AVG(GRADE) FROM TEST_SCORE)
+
+SELECT * FROM RENTAL
+SELECT * FROM INVENTORY 
+
+SELECT FILM_ID, TITLE
+FROM FILM 
+WHERE FILM_ID IN (SELECT INVENTORY.FILM_ID
+FROM RENTAL 
+INNER JOIN INVENTORY
+ON INVENTORY.INVENTORY_ID = RENTAL.INVENTORY_ID
+WHERE return_date BETWEEN '2005-5-29' and '2005-05-30')
+ORDER BY TITLE 
+
+-- SELF JOIN 
+-- Can be viewed as a join of two copies of the same table.
+-- The table is not actually copied but SQL perfors as though it were 
+-- Must use an Alias 
+-- Basic Syntax 
+
+SELECT tableA.col tableB.col
+FROM table AS tableA
+JOIN table AS tableB 
+ON tableA.som_col = tableB.other_col 
+-- Self note: this is useful if we want two columns from the same table to perform a specific request or query 
+
+SELECT emp.name,report.name AS REP -- AS REP so we dont get two columns with name
+FROM employees AS Emp
+JOIN employees AS report 
+ON emp.emp_id = report.report_id 
+
+SELECT f1.title, f2.title, f1.length
+FROM film AS f1
+JOIN film AS f2
+  ON f1.length = f2.length  -- Matching on a shared characteristic
+  AND f1.film_id <> f2.film_id; -- Ensuring we don't match a movie with itself!
+
+-- Wrong messy query 
+SELECT c.first_name, c2.last_name 
+FROM customer AS c
+JOIN customer AS c2
+ON c.last_name = c2.last_name
+where c_customer_id <> c2.customer_id
+
+-- Correct query 
+SELECT 
+    c.first_name,
+    c.last_name,
+    c2.first_name AS other_person_first_name 
+FROM customer AS c
+JOIN customer AS c2 ON C.last_name = c2.last_name
+WHERE c.customer_id <> c2.customer_id
+
+
+SELECT c.city_id, co.country_id
+FROM CITY AS c 
+JOIN CITY AS co
+ON c.country_ID = co.country_id
+
+-- Assessment on a new Database
+
+-- Questions > https://docs.google.com/document/d/1wiuYbTQslmfolQWgeVPB356csjK6yqOUBhgC7fM44o8/edit?tab=t.0
+-- 1. 
+
+SELECT * FROM cd.facilities
+-- 2. 
+
+SELECT name, membercost
+FROM cd.facilities 
+-- 3. 
+
+SELECT name, membercost
+FROM cd.facilities 
+WHERE membercost != 0
+-- 4. 
+
+SELECT facid, name, membercost, monthlymaintenance
+FROM cd.facilities
+WHERE membercost < (monthlymaintenance * 0.02)
+AND membercost != 0
+
+-- 5. 
+
+SELECT * FROM cd.facilities 
+WHERE name LIKE '%Tennis%'
+-- 6. 
+
+SELECT * 
+FROM CD.FACILITIES 
+WHERE facid IN (1,5)
+-- 7. 
+
+SELECT memid, surname, firstname, joindate 
+FROM cd.members 
+WHERE JOINDATE >= '2012-09-01' -- <-- my solution 
+
+-- Other solutions 
+
+SELECT memid, surname, firstname, joindate 
+FROM cd.members 
+WHERE joindate >= CAST('2012-09-01' AS TIMESTAMP);
+
+SELECT memid, surname, firstname, joindate 
+FROM cd.members 
+WHERE EXTRACT(YEAR FROM joindate) = 2012 
+  AND EXTRACT(MONTH FROM joindate) >= 9;
+
+SELECT memid, surname, firstname, joindate 
+FROM cd.members 
+WHERE joindate BETWEEN '2012-09-01' AND '2012-12-31 23:59:59';
+
+-- 8. 
+
+SELECT DISTINCT surname 
+FROM cd.members
+ORDER BY surname ASC
+LIMIT 10;
+
+-- 9. 
+
+SELECT joindate FROM CD.members 
+ORDER BY joindate DESC
+LIMIT 1;
+
+-- 10. 
+
+SELECT COUNT (*) FROM CD.FACILITIES 
+WHERE guestcost >= 10
+
+-- 11. 
+
+SELECT facid, SUM (slots)
+FROM cd.bookings
+WHERE starttime BETWEEN '2012-09-01' AND '2012-10-01'
+GROUP BY facid
+ORDER BY SUM(slots)
+
+-- 12. 
+SELECT facid, SUM(slots) AS total_slots 
+FROM cd.bookings
+GROUP BY facid
+HAVING SUM(slots) > 1000
+ORDER BY facid;
+
+-- 13. 
+
+SELECT starttime, name
+FROM  cd.bookings AS b
+INNER JOIN cd.facilities as f 
+ON b.facid = f.facid 
+WHERE NAME LIKE 'Tennis%'
+AND DATE(starttime) = '2012-09-21' 
+ORDER BY starttime ASC
+
+-- Gemini optimized query 
+
+SELECT b.starttime, f.name
+FROM cd.bookings AS b
+INNER JOIN cd.facilities AS f 
+  ON b.facid = f.facid 
+WHERE f.name LIKE 'Tennis Court%' -- Removed leading % for speed
+  AND b.starttime >= '2012-09-21' -- Start of day
+  AND b.starttime < '2012-09-22'  -- Start of next day (covers everything in between)
+ORDER BY b.starttime;
+
+/*One more trick: The DATE() function
+If you find the range logic annoying, you can use: WHERE DATE(starttime) = '2012-09-21' (Note: This is very readable, but in massive databases, the range logic above is still slightly faster!)*/
+
+-- 14. 
+SELECT b.starttime, m.firstname || ' ' || m.surname AS fullname
+FROM cd.bookings AS B 
+JOIN cd.members AS M
+On b.memid = m.memid 
+WHERE m.firstname = 'David' 
+AND m.surname = 'Farrell'
+
+-- Other solutions by Gemini 
+
+SELECT starttime 
+FROM cd.bookings 
+WHERE memid = (
+    SELECT memid 
+    FROM cd.members 
+    WHERE firstname = 'David' AND surname = 'Farrell'
+);
+
+-- Gemini challenge 
+-- Ready for a step up? How about finding the start times for bookings for a specific facility, but only for members (not guests)? (Hint: Guest member IDs are usually 0).
+
+-- My solution 
+SELECT b.starttime, m.firstname, m.surname 
+FROM cd.bookings AS B 
+JOIN cd.members AS M
+On b.memid = m.memid 
+WHERE m.memid NOT IN (0) -- OR WHERE m.memid != 0  OR WHERE m.surname <> 'GUEST
+
+-- OR 
+-- Gemini solution 
+SELECT b.starttime, m.firstname, m.surname 
+FROM cd.bookings AS b 
+JOIN cd.members AS m
+  ON b.memid = m.memid 
+  AND m.memid <> 0; -- Filter happens during the match
