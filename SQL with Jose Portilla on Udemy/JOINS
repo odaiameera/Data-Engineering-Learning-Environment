@@ -1,0 +1,135 @@
+/* JOINS 
+1. AS Statement 
+2. Full Outer Joins
+3. Left Outer Joins 
+4. Right
+5. UNION */ 
+
+-- As Statement 
+SELECT COUNT (*) AS number_tranx
+FROM payment
+
+SELECT customer_id, SUM(amount) AS total_spent
+FROM payment 
+GROUP BY customer_id
+HAVING SUM (amount) > 100;
+
+-- Joins Basic Syntax 
+SELECT * FROM tableA
+INNER JOIN TableB
+ON TableA.com_match = TableB.col_match 
+
+SELECT * FROM registrations 
+INNER JOIN Logins
+ON registrations.name = Logins.name 
+
+/* This is basically saying grab the registrations table and also grab the logins table and join them together on the column
+that matches in both tables which is the name column */ 
+
+-- Example from my database which is not in the course 
+
+SELECT *
+FROM address
+INNER JOIN customer 
+ON address.address_id = customer.address_id;
+
+SELECT * FROM payment
+INNER JOIN customer 
+ON payment.customer_id = customer.customer_id;
+
+SELECT payment_id,payment.customer_id,customer.first_name 
+FROM payment 
+INNER JOIN customer 
+ON payment.customer_id = customer.customer_id;
+
+/* 💡 SQL INNER JOIN Cheatsheet: 
+• The Intersection Rule: Only returns rows where there is a match in both tables. No match = No row.
+• NULLs are Invisible: `NULL` values never match anything (even other `NULL`s). They are automatically excluded.
+• Default Behavior: `JOIN` is shorthand for `INNER JOIN` in almost all SQL dialects.
+• The "Explosion" Risk: If you join on a non-unique column, one row can match many others, creating unexpected duplicates.
+• Aliases are Mandatory: Use `table AS t` to avoid "ambiguous column name" errors and keep code readable.
+• Filter First?: Remember that `INNER JOIN` is a filter. If you're missing data you expected to see, switch to a `LEFT JOIN` to troubleshoot. */ 
+
+-- Full Outer Join -- Join everything from two tables together even when the data is null unless asked otherwise 
+-- Basic Syntax 
+SELECT * FROM registrations 
+FULL OUTER JOIN logins 
+ON registrations.name = logins.name 
+
+-- Example 1: This is an example on full outer join - all rows from two tables will merge together 
+SELECT * FROM customer 
+FULL OUTER JOIN payment 
+ON customer.customer_id = payment.customer_id
+
+-- Example 2: Due to a new privacy rule, we need to make sure that all customer data is associated with some sort of payment, so we need to double check that we have no null data - in other terms there are no unique
+-- values to any of the tables 
+SELECT * FROM customer 
+FULL OUTER JOIN payment 
+ON customer.customer_id = payment.customer_id 
+WHERE customer.customer_id IS null
+OR payment.payment_id IS null 
+
+-- To make sure that we have no unique IDs in both tables - THIS ONLY VALIDATES the previous query 
+SELECT COUNT (DISTINCT customer_id) FROM customer -- should be 599 
+SELECT COUNT (DISTINCT customer_id) FROM payment -- should be 599
+
+-- LEFT OUTER JOIN or LEFT JOIN 
+
+SELECT film.film_id, title, inventory_id
+FROM film 
+LEFT JOIN inventory 
+ON inventory.film_id = film.film_id
+WHERE inventory.film_id IS null
+
+-- Advanced quiz query from Gemini 
+SELECT c.first_name, c.last_name, SUM(p.amount)
+FROM customer AS c
+INNER JOIN payment AS p
+ON c.customer_id = p.customer_id
+GROUP BY c.customer_id, c.first_name, c.last_name
+ORDER BY SUM(p.amount) DESC;
+
+-- Joins Challenge 
+
+SELECT * FROM address
+SELECT * FROM customer
+
+-- I made errors before I solve 1. California needs to be quoted because it is a string
+-- Also district was ambiguous so I needed to add address.district 
+-- I added aliases myself 
+SELECT a.district, c.email 
+FROM address AS A
+INNER JOIN customer AS C
+ON c.address_id = a.address_id  
+WHERE a.district = 'California'
+
+
+-- Udemy CHALLENGE: MULTI-TABLE JOIN -- That was not in the videos but in the challenge section 
+-- 1. A customer wants to know which movies the actor "Nick Wahlberg" has been in.
+-- 2. You will need to join the 'actor' table, the 'film_actor' table, and the 'film' table.
+-- 3. Return a list of all film titles featuring "Nick Wahlberg".
+
+SELECT * FROM ACTOR -- < This table has the actor_id, first name and last name col - Call this table A 
+SELECT * FROM FILM -- < This table has the film_id and title col - call this table F
+SELECT * FROM FILM_ACTOR -- < This table has the film_id col and the actor_id col - Call this table FA 
+
+SELECT A.actor_id, A.first_name, A.last_name, f.film_id, f.title 
+FROM ACTOR AS A
+INNER JOIN FILM_ACTOR AS FA ON FA.ACTOR_ID = A.ACTOR_ID
+INNER JOIN FILM AS F ON F.FILM_ID = FA.FILM_ID
+WHERE A.ACTOR_ID = '2'
+-- Solved by looking at https://www.w3schools.com/sql/sql_join_inner.asp
+
+/* Gemini challenge 
+You are auditing the store. You want a list of every Film in the film table, but you want to see if any of them are missing from the inventory table (meaning we don't actually own a physical copy).
+If you put film on the left and inventory on the right:
+1. What kind of JOIN would you use to make sure you don't lose the movies that are missing from the inventory?
+2. How will you know which movies are the "missing" ones when you look at the results? */ 
+
+SELECT film.film_id, inventory.film_id 
+FROM FILM AS F 
+LEFT JOIN INVENTORY AS I 
+ON F.FILM_ID = I.FILM_ID 
+WHERE i.inventory_id IS NULL
+
+-- BOOM! Joins completed 

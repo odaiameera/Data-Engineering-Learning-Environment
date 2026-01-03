@@ -1,0 +1,138 @@
+-- Training on a Punch of SELECT Statements and it is more advanced as I go forward in the course 
+-- Let's Go!
+-- DISTINCT command is used to return the distinct values in a column 
+SELECT DISTINCT (rating) FROM film;
+
+-- COUNT is used to find out the number of rows in a column
+SELECT COUNT (rating) FROM film;
+-- COUNT (DISTINCT ..) is used to find out the number of distinct values in a column
+SELECT COUNT (DISTINCT rating) FROM film;
+-- Parenthesis are optional in a  (DISTINCT (column_name)) function
+SELECT COUNT  (DISTINCT (amount)) FROM payment;
+
+-- SELECT WHERE - (Filter or Conditions)
+-- Basic syntax example 
+SELECT column1, column2
+FROM table1
+WHERE conditions; 
+
+SELECT COUNT (*) FROM film
+WHERE rental_rate > 4 AND replacement_cost >= 19.99 AND rating = 'R';
+
+
+SELECT * FROM film
+WHERE rating !='R' ;
+
+
+SELECT email FROM customer
+WHERE first_name = 'Nancy' AND last_name = 'Thomas'; 
+
+SELECT description FROM film
+WHERE title = 'Outlaw Hanky'; 
+
+SELECT phone FROM address 
+WHERE address = '259 Ipoh Drive';
+
+
+-- ORDER BY 
+-- Basic Syntax 
+
+SELECT column_1, column_2
+FROM table
+ORDER BY column_1 ASC/DESC -- Always towards the end of a query 
+LIMIT 1000; -- Always at the very end of a query 
+
+SELECT store_id, first_name, last_name FROM customer
+ORDER BY store_id DESC, first_name  ASC
+
+SELECT * from payment
+ORDER BY payment_date DESC 
+LIMIT 1;
+
+-- Challenge Task - We want to know the customer IDs for the first 10 paying customers
+SELECT customer_id, amount, payment_date
+FROM payment 
+ORDER BY payment_date ASC
+LIMIT 10;
+
+-- Customer wants to know find out the shortest movies to watch during lunch break 
+SELECT title, length
+FROM film
+WHERE length <= 50
+ORDER BY length ASC;
+
+-- Bonus question - If the previous customer wants to know how many options does he have of 50 minutes or less 
+SELECT COUNT (title)
+FROM film
+WHERE length <= 50;
+
+-- Between Operator 
+SELECT * FROM payment 
+LIMIT 2;
+
+SELECT * FROM payment 
+WHERE amount BETWEEN 8 AND 9;
+
+SELECT COUNT (*) FROM payment 
+WHERE amount NOT BETWEEN 8 AND 9;
+
+SELECT * FROM payment 
+WHERE payment_date BETWEEN '2007-02-01' AND '2007-02-15';
+
+-- IN 
+-- Basic Syntax
+SELECT color FROM table 
+WHERE color IN ('red','blue')
+
+SELECT color FROM table 
+WHERE color NOT IN ('red','blue')
+
+SELECT * FROM payment 
+WHERE amount IN (0.99,1.98,1.99)
+
+SELECT COUNT (*) FROM payment 
+WHERE amount NOT IN (0.99,1.98,1.99)
+
+SELECT * FROM customer 
+WHERE first_name NOT IN ('John','Jake','Julie')
+
+-- LIKE  and ILIKE 
+SELECT * FROM customer 
+WHERE first_name LIKE 'J%'
+
+SELECT COUNT (*) FROM customer 
+WHERE first_name LIKE 'J%'
+
+SELECT * FROM customer 
+WHERE first_name LIKE 'J%' AND last_name LIKE 'S%'
+
+SELECT * FROM customer 
+WHERE first_name ILIKE 'J%' AND last_name ILIKE 'S%'
+
+-- LIKE is case sensitive and ILIKE is case insensitive 
+
+SELECT * FROM customer 
+WHERE first_name LIKE 'A%' AND last_name NOT LIKE 'B%'
+ORDER BY last_name
+
+-- General Challenge 
+-- 1. How many payment tranx are greater than 5 dollars? 
+SELECT COUNT (amount) FROM payment 
+WHERE amount > 5; 
+-- 2. How many actors have a first name that starts with the letter P?
+SELECT COUNT (*) FROM actor 
+WHERE first_name LIKE 'P%'; 
+-- 3. How many unique districts are our customers from? 
+SELECT COUNT (DISTINCT (district)) FROM address;
+-- 4. Retrieve the list of names for those districts from the previous question 
+SELECT DISTINCT district FROM address; 
+-- 5. How many films have a rating of R and a replacement cost between $5 and $15? 
+SELECT count(*) FROM film 
+WHERE rating = 'R' 
+AND replacement_cost BETWEEN 5 AND 15;
+-- 6. How many films have the word Truman somewhere in the title
+SELECT COUNT (*) 
+FROM film 
+WHERE title LIKE '%Truman%';
+
+-- Section 2 Completed

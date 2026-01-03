@@ -1,0 +1,125 @@
+/* BLOCK 1: Basic Table Creation and Testing
+   Demonstrates a simple CASE expression to transform integers to text.
+*/
+CREATE TABLE test1 (
+    a INT
+);
+
+INSERT INTO test1 (a)
+VALUES (1), (2);
+
+SELECT * FROM test1;
+
+SELECT a,
+    CASE
+        WHEN a = 1 THEN 'one'
+        WHEN a = 2 THEN 'two'
+        ELSE 'other' 
+    END AS testing -- Note: 'AS testing' moved after END for correct syntax
+FROM test1;
+
+
+/* BLOCK 2: Searched CASE Expression
+   Uses range comparisons (<= and BETWEEN) to categorize customers by ID.
+*/
+SELECT customer_id,
+    CASE
+        WHEN (customer_id <= 100) THEN 'Premium'
+        WHEN (customer_id BETWEEN 100 AND 200) THEN 'Plus'
+        ELSE 'Normal' 
+    END AS customer_class
+FROM CUSTOMER 
+ORDER BY customer_id;
+
+
+/* BLOCK 3: Simple CASE Expression
+   Matches specific values (2 and 5) to assign raffle statuses.
+*/
+SELECT customer_id,
+    CASE customer_id
+        WHEN 2 THEN 'Winner'
+        WHEN 5 THEN 'Second_Place'
+        ELSE 'Normal'
+    END AS raffle_results
+FROM CUSTOMER;
+
+
+/* BLOCK 4: Pivot-Style Aggregation (Numeric)
+   Uses SUM(CASE...) to count how many films fall into specific price points.
+*/
+SELECT 
+    SUM(CASE RENTAL_RATE WHEN 0.99 THEN 1 ELSE 0 END) AS bargains,
+    SUM(CASE RENTAL_RATE WHEN 2.99 THEN 1 ELSE 0 END) AS regular,
+    SUM(CASE RENTAL_RATE WHEN 4.99 THEN 1 ELSE 0 END) AS Premium
+FROM film;
+
+SELECT * FROM FILM;
+
+
+/* BLOCK 5: Pivot-Style Aggregation (String/Text)
+   Uses SUM(CASE...) with single quotes to count films by their MPAA rating.
+*/
+SELECT 
+    SUM(CASE RATING WHEN 'R' THEN 1 ELSE 0 END) AS R,
+    SUM(CASE RATING WHEN 'PG' THEN 1 ELSE 0 END) AS PG,
+    SUM(CASE RATING WHEN 'PG-13' THEN 1 ELSE 0 END) AS PG13
+FROM FILM;
+
+/* ================================================================
+UNDERSTANDING THE COALESCE() FUNCTION
+Definition: Returns the first NON-NULL value in a list.
+Use Case: Handling missing data, setting defaults, and math.
+================================================================
+*/
+
+--- SCENARIO 1: The "Safety Net" (Default Values) ---
+-- If 'last_login' is NULL, show 'Never logged in' instead of a blank space.
+SELECT 
+    username, 
+    COALESCE(last_login, '1900-01-01 00:00:00') AS last_login_checked,
+    COALESCE(email, 'No Email on File') AS contact_info
+FROM account;
+
+
+--- SCENARIO 2: The "Chain of Command" (Fallback Logic) ---
+-- It checks columns from left to right. 
+-- It returns the first one that has data.
+-- If all are NULL, it returns 'No Contact Info'.
+/*
+SELECT 
+    first_name,
+    COALESCE(mobile_phone, home_phone, work_phone, 'No Contact Info') AS primary_contact
+FROM students;
+*/
+
+
+--- SCENARIO 3: Preventing "Math Poisoning" ---
+-- In SQL, [Number] + NULL = NULL. 
+-- COALESCE turns NULL into 0 so the math actually works.
+-- This is a life-saver for financial reports!
+
+SELECT 
+    firstname,
+    lastname,
+    salary,
+    -- If bonus is NULL, treat it as 0 so the addition works
+    (salary + COALESCE(bonus, 0)) AS total_compensation
+FROM employees;
+
+
+--- SCENARIO 4: Your 'newds' Table Example ---
+-- Using COALESCE to provide a fallback for titles
+SELECT 
+    info_id,
+    COALESCE(TITLE, 'Untitled Article') AS display_title,
+    PERSON
+FROM news;
+
+SELECT 
+    CAST ('5' AS INTEGER) AS new_int
+
+--- This code does not make sense for SQL: SELECT 'ten'::Integer
+-- However, this code does make sense for SQL: SELECT '5'::Integer < 
+-- The double :: is exclusive to the Postgres SQL Engine 
+
+SELECT CHAR_LENGTH (CAST (inventory_id AS VARCHAR))  FROM rental 
