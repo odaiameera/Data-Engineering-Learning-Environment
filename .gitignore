@@ -1,0 +1,15 @@
+# Virtual Environment
+.venv/
+venv/
+env/
+
+# Python cache
+__pycache__/
+*.py[cod]
+
+# Environment variables (AWS/Snowflake keys)
+.env
+
+# Windows system files
+Thumbs.db
+desktop.ini
