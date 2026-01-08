@@ -1,0 +1,34 @@
+# --- Python & Virtual Environments ---
+# This ignores your ibm_env, jupyter_env, and any other venvs
+[vV][eE][nN][vV]/
+*_env/
+bin/
+lib/
+include/
+share/
+pyvenv.cfg
+*.pyc
+__pycache__/
+
+# --- Jupyter Notebooks ---
+# Ignores the hidden checkpoint files Jupyter creates
+.ipynb_checkpoints
+*/.ipynb_checkpoints/*
+# If you export notebooks to HTML or PDF, ignore those too
+*.html
+*.pdf
+
+# --- Database & Sensitive Info ---
+# Ignores local Snowflake/SQL connection details
+.snowflake/
+*.toml
+*.log
+*.sqlite
+.env
+.secrets
+
+# --- VS Code & System Files ---
+# Ignores your local VS Code workspace settings
+.vscode/
+.DS_Store
+Thumbs.db
